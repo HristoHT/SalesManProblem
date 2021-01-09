@@ -18,6 +18,7 @@
 std::ostream& operator<< (std::ostream&, std::vector<size_t>);
 
 class Graph {
+protected:
     size_t nodes;
     std::vector<std::set<size_t>> graph;
     std::set<std::pair<size_t, size_t>> used;

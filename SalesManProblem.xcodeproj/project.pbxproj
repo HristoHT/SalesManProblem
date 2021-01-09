@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		45221BE625A8DA8C00054D19 /* TSP_genetic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45221BE425A8DA8C00054D19 /* TSP_genetic.cpp */; };
+		454C1A5F25A989E000BAD9BA /* GraphCreator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 454C1A5D25A989E000BAD9BA /* GraphCreator.cpp */; };
+		45B61F5625AA16AE004CD917 /* TSP_dp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45B61F5525AA16AE004CD917 /* TSP_dp.cpp */; };
 		45D9463925A785EE00135BE0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45D9463825A785EE00135BE0 /* main.cpp */; };
 		45D9464025A7866000135BE0 /* TSP_brute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45D9463F25A7866000135BE0 /* TSP_brute.cpp */; };
 		45D9464425A7869900135BE0 /* Graph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45D9464225A7869900135BE0 /* Graph.cpp */; };
@@ -28,6 +30,9 @@
 
 /* Begin PBXFileReference section */
 		45221BE425A8DA8C00054D19 /* TSP_genetic.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TSP_genetic.cpp; sourceTree = "<group>"; };
+		454C1A5D25A989E000BAD9BA /* GraphCreator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GraphCreator.cpp; sourceTree = "<group>"; };
+		454C1A5E25A989E000BAD9BA /* GraphCreator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GraphCreator.hpp; sourceTree = "<group>"; };
+		45B61F5525AA16AE004CD917 /* TSP_dp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TSP_dp.cpp; sourceTree = "<group>"; };
 		45D9463525A785EE00135BE0 /* SalesManProblem */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SalesManProblem; sourceTree = BUILT_PRODUCTS_DIR; };
 		45D9463825A785EE00135BE0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		45D9463F25A7866000135BE0 /* TSP_brute.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TSP_brute.cpp; sourceTree = "<group>"; };
@@ -74,6 +79,7 @@
 				45D9463F25A7866000135BE0 /* TSP_brute.cpp */,
 				45D9464A25A795F500135BE0 /* TSPs.hpp */,
 				45221BE425A8DA8C00054D19 /* TSP_genetic.cpp */,
+				45B61F5525AA16AE004CD917 /* TSP_dp.cpp */,
 			);
 			path = SalesManProblem;
 			sourceTree = "<group>";
@@ -83,6 +89,8 @@
 			children = (
 				45D9464225A7869900135BE0 /* Graph.cpp */,
 				45D9464325A7869900135BE0 /* Graph.hpp */,
+				454C1A5D25A989E000BAD9BA /* GraphCreator.cpp */,
+				454C1A5E25A989E000BAD9BA /* GraphCreator.hpp */,
 			);
 			path = Graph;
 			sourceTree = "<group>";
@@ -156,6 +164,8 @@
 				45D9464025A7866000135BE0 /* TSP_brute.cpp in Sources */,
 				45221BE625A8DA8C00054D19 /* TSP_genetic.cpp in Sources */,
 				45D9464425A7869900135BE0 /* Graph.cpp in Sources */,
+				45B61F5625AA16AE004CD917 /* TSP_dp.cpp in Sources */,
+				454C1A5F25A989E000BAD9BA /* GraphCreator.cpp in Sources */,
 				45D9463925A785EE00135BE0 /* main.cpp in Sources */,
 				45D9464F25A8505700135BE0 /* TSP.cpp in Sources */,
 			);

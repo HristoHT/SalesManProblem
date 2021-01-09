@@ -12,32 +12,38 @@
 #include <stdio.h>
 #include <stack>
 #include <string>
-#include "Graph.hpp"
+#include <chrono>
+#include <iomanip>
+
+#include "GraphCreator.hpp"
 
 class TSP {
-public:
+protected:
     Graph graph;
     std::string name;
-
     std::set<size_t> used;
-
     std::vector<size_t> currentPath;
     size_t currentPathLen;
-
     std::vector<size_t> minPath;
     size_t minPathLen;
+    std::chrono::steady_clock::time_point begin, end;
 
     void compareCurrentPathWithMinPath();
 
-    TSP(Graph graph, std::string name);
-
-    virtual void algorithm() = 0;
+    TSP(std::string name);
+    bool isValid(std::vector<size_t> path);
+    virtual void algorithm(Graph graph) = 0;
 
     size_t getMinPathLen();
     std::vector<size_t> getMinPath();
 
     void print(std::ostream& out);
     bool isNodeVisited(size_t);
+
+    void setGraph(Graph graph);
+
+public:
+     void start(Graph);
 };
 
 #endif /* TSP_hpp */

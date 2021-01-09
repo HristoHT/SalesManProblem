@@ -7,80 +7,68 @@
 //
 
 #include "TSPs.hpp"
-TSP_genetic::TSP_genetic(Graph graph, size_t populationSize) : TSP(graph, "Genetic Algorithm"), populationSize(populationSize) {
+TSP_genetic::TSP_genetic(size_t populationSize, size_t generations) : TSP("Genetic Algorithm"), populationSize(populationSize), generations(generations), distribution(std::normal_distribution<float>(.5 ,1.)) {
 }
 
 struct TSP_genetic::Individual {
 	std::vector<size_t> genom;
+    size_t len;
 	size_t fitness;
 };
 
-void TSP_genetic::algorithm() {
+void TSP_genetic::algorithm(Graph graph) {
 	size_t generation = 1;
-	size_t numberOfGeneIterations = 15;
 	std::vector<struct TSP_genetic::Individual> population;
+    size_t count1 = 0, count2 = 0, count3 = 0, count4 = 0;
+    struct TSP_genetic::Individual fitestIndividual{{}, SIZE_T_MAX, 0};
 
 	for(size_t i = 0; i < populationSize; i++) {
-        std::vector<size_t> newGenom = createGenom();
-		population.push_back(TSP_genetic::Individual{newGenom, calculateFitness(newGenom)});
-		used.clear();
+		population.push_back(calculateFitness(createGenom()));
+
+        if(fitestIndividual < population[i]) {
+            fitestIndividual = population[i];
+        }
 	}
 
 	size_t temperature = 10000;
-    struct TSP_genetic::Individual fitestIndividual{{}, SIZE_T_MAX};
-    bool isFromValidGenom = false;
 
-	while (temperature > 1000 && generation <= numberOfGeneIterations) {
+	while (temperature > 1000 && generation <= generations) {
 //		std::cout << "curent generation is " << generation << std::endl;
 		std::sort(population.begin(), population.end(), operator<);
 		std::vector<struct TSP_genetic::Individual> newPopulation;
 
+        if(population.size() < populationSize) {
+            while(population.size() != populationSize) {
+                population.push_back(population[random(0, population.size())]);
+            }
+        }
+
 		for (TSP_genetic::Individual individual : population) {
-			while (true) {
-				std::vector<size_t> newGenom = mutateGene(individual.genom);
-				struct TSP_genetic::Individual newIndividual {newGenom, calculateFitness(newGenom)};
+            std::vector<size_t> newGenom = mutateGene(individual.genom);
+            struct TSP_genetic::Individual newIndividual = calculateFitness(newGenom);
 
+            count1++;
+            float probabilityToAccept = getNormalDist();
+            if(newIndividual < individual || probabilityToAccept > 0.8) {
+                newPopulation.push_back(newIndividual);
+            }
 
-                if(newIndividual < individual || isValidGenom(newIndividual.genom)) {
-					newPopulation.push_back(newIndividual);
-					break;
-				} else {
-					float probabilityToAccept = pow(2.7, -1 * ((float)(newIndividual.fitness
-					                                                   - individual.fitness)
-					                                           / temperature));
-					if (probabilityToAccept > 0.5) {
-						newPopulation.push_back(newIndividual);
-						break;
-					}
-				}
+        }
 
-			}
-		}
 		temperature = coolDown(temperature);
 		population = newPopulation;
 		generation++;
 
         for (TSP_genetic::Individual individual: population) {
-           if(isValidGenom(individual.genom)) {
-               if(isFromValidGenom) {
-                   if(individual < fitestIndividual) {
-                       fitestIndividual = individual;
-                   }
-               } else {
-                   fitestIndividual = individual;
-                   isFromValidGenom = true;
-               }
-           } else if(!isFromValidGenom){
-               if(individual < fitestIndividual) {
-                   fitestIndividual = individual;
-               }
+           if(individual > fitestIndividual) {
+               fitestIndividual = individual;
            }
         }
 	}
+//    std::cout<<count1<<", "<<count2<<", "<<count3<<", "<<count4<<std::endl;
 
 	minPath = fitestIndividual.genom;
-	minPathLen = fitestIndividual.fitness;
-	print(std::cout);
+	minPathLen = fitestIndividual.len;
 }
 
 size_t TSP_genetic::random(size_t from, size_t to) {
@@ -105,14 +93,15 @@ std::vector<size_t> TSP_genetic::mutateGene(std::vector<size_t> pathToMutate) {
 	return pathToMutate;
 }
 
-size_t TSP_genetic::calculateFitness(std::vector<size_t> genom) {
+TSP_genetic::Individual TSP_genetic::calculateFitness(std::vector<size_t> genom) {
 	size_t path = 0;
 
 	for(size_t i = 0; i < genom.size() - 1; i++) {
 		path += graph.getPath(genom[i], genom[i + 1]);
 	}
 
-	return path;
+    size_t fitness = path + (isValid(genom) ? SIZE_T_MAX : 0);
+    return TSP_genetic::Individual{genom, path, fitness};
 }
 
 size_t TSP_genetic::coolDown(size_t t) {
@@ -125,16 +114,6 @@ bool operator < (TSP_genetic::Individual& a, TSP_genetic::Individual& b) {
 
 bool operator > (TSP_genetic::Individual& a, TSP_genetic::Individual& b) {
 	return !(a < b);
-}
-
-bool TSP_genetic::isValidGenom(std::vector<size_t> genome) {
-    for(size_t i = 0; i < genome.size() - 1; i++) {
-        if(!graph.hasPathBetween(genome[i], genome[i + 1])) {
-            return false;
-        }
-    }
-
-    return true;
 }
 
 std::vector<size_t> TSP_genetic::createGenom() {
@@ -152,4 +131,12 @@ std::vector<size_t> TSP_genetic::createGenom() {
     genom.push_back(0);
 
     return genom;
+}
+
+float TSP_genetic::getNormalDist() {
+    float val = -1;
+    do { val = distribution(generator); }
+    while(val < 0.0f || val > 1.0f);
+
+    return val;
 }

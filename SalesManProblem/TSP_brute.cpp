@@ -8,14 +8,12 @@
 
 #include <stdio.h>
 #include "TSPs.hpp"
-TSP_brute::TSP_brute(Graph graph): TSP(graph, "Brute Force") {}
+TSP_brute::TSP_brute(): TSP("Brute Force") {}
 
-void TSP_brute::algorithm() {
+void TSP_brute::algorithm(Graph graph) {
     currentPath.push_back(0);
 
     getNextNodeFrom(0);
-
-    print(std::cout);
 }
 
 void TSP_brute::getNextNodeFrom(size_t a) {
