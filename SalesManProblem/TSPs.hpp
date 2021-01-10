@@ -15,7 +15,7 @@
 #include <math.h>
 #include <ctime>
 #include <random>
-
+#include <queue>
 #include "TSP.hpp"
 
 class TSP_brute: public TSP {
@@ -50,10 +50,15 @@ bool operator < (TSP_genetic::Individual&, TSP_genetic::Individual&);
 bool operator > (TSP_genetic::Individual&, TSP_genetic::Individual&);
 
 class TSP_dp: public TSP {
-    size_t g(size_t);
-    std::map<std::pair<size_t, std::set<size_t>>, size_t> calculations;
-    std::set<size_t> clearConnectionsOf(size_t);
+    struct Result {
+        bool status;
+        size_t result;
+    };
+
+    std::map<std::pair<size_t, std::set<size_t>>, size_t> calculations, calculationsPath;
+    std::vector<size_t> findPath(size_t, std::set<size_t>);
     void algorithm(Graph);
+    Result g(size_t, std::set<size_t>);
 public:
     TSP_dp();
 };

@@ -27,13 +27,17 @@ void TSP::compareCurrentPathWithMinPath() {
 void TSP::print(std::ostream& out) {
     out << std::left << std::setw(20) << std::setfill(' ') << name;
     out << std::left << std::setw(10) << std::setfill(' ') << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count();
-    out << std::left << std::setw(5) << std::setfill(' ') << minPathLen;
+    out << std::left << std::setw(5) << std::setfill(' ') << (isValid(minPath) ? minPathLen : 0);
     std::cout << std::left << std::setw(6) << std::setfill(' ') << (isValid(minPath) ? "T" : "F");
     out << minPath;
     out << "\n";
 }
 
 bool TSP::isValid(std::vector<size_t> path) {
+    if (path.size() < graph.size()) {
+        return false;
+    }
+
     for(size_t i = 0; i < path.size() - 1; i++) {
         if(!graph.hasPathBetween(path[i], path[i + 1])) {
             return false;

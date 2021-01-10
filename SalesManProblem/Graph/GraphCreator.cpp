@@ -44,7 +44,7 @@ void GraphCreator::connectAllOnLevel(size_t lvl) {
             size_t secondNode = findNextUnconnectedTo(firstNode, nodesWithConnection[lvl]);
 //            std::cout << firstNode << "->" << secondNode << std::endl;
 
-            connectNode(firstNode, secondNode, random(1, 10));
+            connectNode(firstNode, secondNode, 1);
             usePathBetween(firstNode, secondNode);
 
             nodesWithConnection[lvl].erase(secondNode);

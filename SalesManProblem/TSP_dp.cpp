@@ -10,51 +10,63 @@
 TSP_dp::TSP_dp(): TSP("TSP_dp") {}
 
 void TSP_dp::algorithm(Graph graph) {
-    currentPath.push_back(0);
-    g(0);
-
+    calculations.clear();
+    calculationsPath.clear();
+    TSP_dp::Result r = g(0, {0});
+    minPathLen = r.result;
+    minPath = findPath(0, {0});
 }
 
-size_t TSP_dp::g(size_t a) {
-    std::set<size_t> connections = clearConnectionsOf(a);
+struct TSP_dp::Result TSP_dp::g(size_t node, std::set<size_t> passed) {
+    std::pair<size_t, std::set<size_t>> keyPair{node, passed};
 
-    if(connections.empty() && graph.hasPathBetween(a, 0) && currentPath.size() == graph.size()) {
-        currentPath.push_back(0);
-        currentPathLen += graph.getPath(a, 0);
-        compareCurrentPathWithMinPath();
-        currentPath.pop_back();
-        currentPathLen -= graph.getPath(a, 0);
-        return graph.getPath(a, 0);
-    }
-    
-//    if(calculations.find(std::make_pair(a, connections)) != calculations.end()){
-//        return  calculations[std::make_pair(a, connections)];
-//    }
-    used.insert(a);
-
-    size_t minPath = SIZE_T_MAX;
-    for (size_t b : connections) {
-            currentPath.push_back(b);
-            currentPathLen += graph.getPath(a, b);
-            minPath = std::min(minPath, graph.getPath(a, b) + g(b));
-            currentPath.pop_back();
-            currentPathLen -= graph.getPath(a, b);
-    }
-
-//    calculations[std::make_pair(a, connections)] = minPath;
-    used.erase(a);
-
-    return minPath;
-}
-
-std::set<size_t> TSP_dp::clearConnectionsOf(size_t a) {
-    std::set<size_t> connections = graph.connectionsOf(a);
-
-    for (size_t b : used) {
-        if(connections.find(b) != connections.end()) {
-            connections.erase(b);
+    if(passed.size() == graph.size()) {
+        if(graph.hasPathBetween(node, 0)) {
+            return TSP_dp::Result{true, graph.getPath(node, 0)};
+        } else {
+            return {false};
         }
     }
 
-    return connections;
+    if(calculations.find(keyPair) != calculations.end()) {
+        return TSP_dp::Result{true, calculations[keyPair]};
+    }
+
+    size_t minPathForCurrentNode = 10000000;
+    bool isVisitedAny = false;
+    for (size_t nextNode : graph.connectionsOf(node)) {
+        if(passed.find(nextNode) == passed.end()) {
+            isVisitedAny = true;
+            passed.insert(nextNode);
+            currentPath.push_back(nextNode);
+            TSP_dp::Result gResult = g(nextNode, passed);
+            size_t result = graph.getPath(node, nextNode) + (gResult.status ? gResult.result : 10000000);
+            if(minPathForCurrentNode > result) {
+                minPathForCurrentNode = result;
+                calculationsPath[keyPair] = nextNode;
+                calculations[keyPair] = minPathForCurrentNode;
+            }
+            currentPath.pop_back();
+            passed.erase(nextNode);
+        }
+    }
+
+    if(!isVisitedAny) {
+        return {false};
+    }
+
+    return {true, minPathForCurrentNode};
+}
+
+std::vector<size_t> TSP_dp::findPath(size_t a, std::set<size_t> set) {
+    std::vector<size_t> vec;
+    while (set.size() != graph.size()) {
+        size_t nextNode = calculationsPath[std::make_pair(a, set)];
+        vec.push_back(a);
+        set.insert(nextNode);
+        a = nextNode;
+    }
+    vec.push_back(a);
+    vec.push_back(0);
+    return vec;
 }
