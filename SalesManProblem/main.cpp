@@ -11,13 +11,14 @@
 
 int main(int argc, const char * argv[]) {
 	std::srand((int)time(0));
-
-	GraphCreator small(5, 2);
-	GraphCreator mid(10, 5);
-	GraphCreator large(12, 7);
+    
+	GraphCreator small(5);
+	GraphCreator mid(10);
+	GraphCreator large(15);
+    GraphCreator complex(15, 8);
 
 	TSP_brute tsp_brute;
-	TSP_genetic tsp_genetic_small(10000, 10000), tsp_genetic_large(100000, 1000000);
+	TSP_genetic tsp_genetic(10000, 100);
 	TSP_dp tsp_dp;
 
 	std::cout << std::left << std::setw(20) << std::setfill(' ') << "Algorithm";
@@ -28,15 +29,17 @@ int main(int argc, const char * argv[]) {
 
 	tsp_brute.start(small);
     tsp_dp.start(small);
-	tsp_genetic_small.start(small);
+	tsp_genetic.start(small);
 
 	tsp_brute.start(mid);
     tsp_dp.start(mid);
-	tsp_genetic_small.start(mid);
+	tsp_genetic.start(mid);
 
     tsp_dp.start(large);
-    tsp_genetic_large.start(large);
-//    tsp_brute.start(large);
+    tsp_genetic.start(large);
+
+    tsp_dp.start(complex);
+    tsp_genetic.start(complex);
 
 	return 0;
 }

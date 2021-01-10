@@ -40,7 +40,6 @@ private:
     Individual calculateFitness(std::vector<size_t>);
     size_t coolDown(size_t);
     inline float getNormalDist();
-
     void algorithm(Graph);
 public:
     TSP_genetic(size_t, size_t);

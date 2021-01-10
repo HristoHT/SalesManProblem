@@ -7,6 +7,13 @@
 //
 
 #include "GraphCreator.hpp"
+GraphCreator::GraphCreator(size_t nodes) {
+    this->nodes = nodes < 3 ? 3 : nodes;
+    this->connections = this->nodes - 1;
+    setNodes();
+    connectEverything();
+}
+
 GraphCreator::GraphCreator(size_t nodes, size_t connections) {
     this->nodes = nodes < 3 ? 3 : nodes;
     this->connections = connections * 2 > this->nodes ? this->nodes - 1 : connections * 2;
@@ -21,7 +28,21 @@ GraphCreator::GraphCreator(size_t nodes, size_t connections) {
         nodesWithConnection[0].insert(i);
     }
 
-    connectAllOnLevel(0);
+    if (this->connections == this->nodes - 1) {
+        connectEverything();
+    } else {
+        connectAllOnLevel(0);
+    }
+}
+
+void GraphCreator::connectEverything() {
+    for (size_t i = 0; i < nodes; i++) {
+        for (size_t j = 0; j < nodes; j++) {
+            if(i!=j){
+                connectNode(i, j, random(1, 10));
+            }
+        }
+    }
 }
 
 size_t GraphCreator::random(size_t from, size_t to) {
