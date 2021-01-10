@@ -32,39 +32,50 @@ void TSP_genetic::algorithm(Graph graph) {
 
 	size_t temperature = 10000;
 
-	while (temperature > 1000 && generation <= generations) {
+	while (generation <= generations) {
 //		std::cout << "curent generation is " << generation << std::endl;
 		std::sort(population.begin(), population.end(), operator<);
 		std::vector<struct TSP_genetic::Individual> newPopulation;
+        TSP_genetic::Individual genBest = population[0], genWorst = population[0];
 
         if(population.size() < populationSize) {
             while(population.size() != populationSize) {
-                population.push_back(population[random(0, population.size())]);
+                population.push_back(population[0]);
             }
         }
 
 		for (TSP_genetic::Individual individual : population) {
-            std::vector<size_t> newGenom = mutateGene(individual.genom);
+            std::vector<size_t> newGenom = mutateGene(mutateGene(mutateGene(individual.genom)));
             struct TSP_genetic::Individual newIndividual = calculateFitness(newGenom);
 
             count1++;
             float probabilityToAccept = getNormalDist();
-            if(newIndividual < individual || probabilityToAccept > 0.8) {
+            if(newIndividual < individual || probabilityToAccept > 0.75) {
+                if(newIndividual < genBest) {
+                    genBest = newIndividual;
+                }
+
+                if(newIndividual > genWorst) {
+                    genWorst = newIndividual;
+                }
+
                 newPopulation.push_back(newIndividual);
             }
 
         }
 
-		temperature = coolDown(temperature);
+		//temperature = coolDown(temperature);
 		population = newPopulation;
 		generation++;
 
         for (TSP_genetic::Individual individual: population) {
-           if(individual > fitestIndividual) {
+           if(individual < fitestIndividual) {
                fitestIndividual = individual;
            }
         }
-	}
+
+        //std::cout << "BEST=" << genBest.len << " WORST=" << genWorst.len << " \n";
+    }
 //    std::cout<<count1<<", "<<count2<<", "<<count3<<", "<<count4<<std::endl;
 
 	minPath = fitestIndividual.genom;
@@ -100,7 +111,7 @@ TSP_genetic::Individual TSP_genetic::calculateFitness(std::vector<size_t> genom)
 		path += graph.getPath(genom[i], genom[i + 1]);
 	}
 
-    size_t fitness = path + (isValid(genom) ? SIZE_T_MAX : 0);
+    size_t fitness = path + (isValid(genom) ? 1000000 : 0);
     return TSP_genetic::Individual{genom, path, fitness};
 }
 
